@@ -1,11 +1,9 @@
 name: Start Kamatera VPS (Upwork Scraper)
 
 on:
-  # руками из вкладки Actions
   workflow_dispatch:
-  # каждые 2 часа
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '0 */2 * * *'   # каждые 2 часа
 
 jobs:
   start-vps:
@@ -13,6 +11,8 @@ jobs:
 
     env:
       KAMATERA_SERVER_ID: c92373d5-95d8-49a6-855d-9a60c73d5b09
+      KAMATERA_API_ID: ${{ secrets.KAMATERA_API_ID }}
+      KAMATERA_API_SECRET: ${{ secrets.KAMATERA_API_SECRET }}
 
     steps:
       - name: Power ON Kamatera VPS
@@ -21,8 +21,8 @@ jobs:
 
           RESPONSE=$(curl -sS -X PUT "https://console.kamatera.com/service/server/${KAMATERA_SERVER_ID}/power" \
             -H "Content-Type: application/x-www-form-urlencoded" \
-            -H "clientId: ${{ secrets.KAMATERA_CLIENT_ID }}" \
-            -H "secret: ${{ secrets.KAMATERA_API_SECRET }}" \
+            -H "AuthClientId: ${KAMATERA_API_ID}" \
+            -H "AuthSecret: ${KAMATERA_API_SECRET}" \
             --data "power=on")
 
           echo "Kamatera response:"
