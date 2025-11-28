@@ -3,9 +3,9 @@ name: Upwork VPS cycle
 on:
   # руками из Actions
   workflow_dispatch:
-  # каждые 2 часа
+  # каждые 5 часа
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '0 */5 * * *'
 
 jobs:
   upwork-vps-cycle:
