@@ -1,11 +1,9 @@
 name: Upwork VPS cycle
 
 on:
-  # руками из Actions
   workflow_dispatch:
-  # каждые 5 часа
   schedule:
-    - cron: '0 */5 * * *'
+    - cron: "0 */5 * * *"   # каждые 5 часов
 
 jobs:
   upwork-vps-cycle:
@@ -17,33 +15,31 @@ jobs:
       KAMATERA_API_SECRET: ${{ secrets.KAMATERA_API_SECRET }}
 
     steps:
+
+      # --- POWER ON ---
       - name: Power ON Kamatera VPS
         run: |
-          echo "Starting VPS ${KAMATERA_SERVER_ID} via Kamatera API..."
-
+          echo "Starting VPS ${KAMATERA_SERVER_ID}..."
           RESPONSE=$(curl -sS -X PUT "https://console.kamatera.com/service/server/${KAMATERA_SERVER_ID}/power" \
             -H "AuthClientId: ${KAMATERA_API_ID}" \
             -H "AuthSecret: ${KAMATERA_API_SECRET}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             --data "power=on")
-
-          echo "Kamatera ON response:"
           echo "$RESPONSE"
 
-      - name: Wait for scraper to finish
+      # --- WAIT 10 MINUTES ---
+      - name: Wait for scraper to complete
         run: |
-          echo "Waiting 8 minutes for scraper to run..."
-          sleep 480
+          echo "Waiting 10 minutes..."
+          sleep 600
 
+      # --- POWER OFF ---
       - name: Power OFF Kamatera VPS
         run: |
-          echo "Stopping VPS ${KAMATERA_SERVER_ID} via Kamatera API..."
-
+          echo "Stopping VPS ${KAMATERA_SERVER_ID}..."
           RESPONSE=$(curl -sS -X PUT "https://console.kamatera.com/service/server/${KAMATERA_SERVER_ID}/power" \
             -H "AuthClientId: ${KAMATERA_API_ID}" \
             -H "AuthSecret: ${KAMATERA_API_SECRET}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             --data "power=off")
-
-          echo "Kamatera OFF response:"
           echo "$RESPONSE"
